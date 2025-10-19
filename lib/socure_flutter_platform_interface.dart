@@ -1,5 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import 'models/socure_docv_options.dart';
+import 'models/socure_docv_result.dart';
 import 'socure_flutter_method_channel.dart';
 
 abstract class SocureFlutterPlatform extends PlatformInterface {
@@ -23,6 +25,26 @@ abstract class SocureFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  /// Launches the Socure DocV SDK for document verification.
+  ///
+  /// Takes [SocureDocVOptions] containing the SDK key and transaction token.
+  /// Returns a [SocureDocVResult] which is either:
+  /// - [SocureDocVSuccess] with a device session token on success
+  /// - [SocureDocVFailure] with error details on failure
+  ///
+  /// Example:
+  /// ```dart
+  /// final options = SocureDocVOptions(
+  ///   sdkKey: 'your-sdk-key',
+  ///   transactionToken: 'transaction-token-from-backend',
+  /// );
+  /// final result = await SocureFlutter().launchDocV(options);
+  /// ```
+  Future<SocureDocVResult> launchDocV(SocureDocVOptions options) {
+    throw UnimplementedError('launchDocV() has not been implemented.');
+  }
+
+  /// Gets the platform version (for testing purposes).
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
