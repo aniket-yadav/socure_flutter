@@ -18,8 +18,14 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        // Socure SDK Maven repository (public, no authentication needed)
-        maven { url 'https://sdk.socure.com' }
+        // Socure SDK Maven repository (requires authentication)
+        maven {
+            url 'https://sdk.socure.com'
+            credentials {
+                username 'socure-android'
+                password '1GdqOxqHlxLPMSOWH_8zXkUkgjV0jS8U6UVqpUPJNFg'
+            }
+        }
     }
 }
 
