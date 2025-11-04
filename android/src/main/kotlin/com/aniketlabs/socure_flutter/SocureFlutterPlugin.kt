@@ -96,6 +96,12 @@ class SocureFlutterPlugin :
             // Store the result callback for later
             pendingResult = result
 
+            // Log launch parameters
+            android.util.Log.d("SocureFlutter", "🚀 Launching DocV SDK:")
+            android.util.Log.d("SocureFlutter", "   SDK Key: ${sdkKey.take(10)}...")
+            android.util.Log.d("SocureFlutter", "   Transaction Token: ${transactionToken.take(10)}...")
+            android.util.Log.d("SocureFlutter", "   Use Socure Gov: $useSocureGov")
+
             // Build Socure DocV context (based on official Socure docs)
             val docVContext = SocureDocVContext(
                 transactionToken,
@@ -141,6 +147,7 @@ class SocureFlutterPlugin :
             SocureSdk.getResult(data) { sdkResult ->
                 when (sdkResult) {
                     is SocureDocVSuccess -> {
+                        android.util.Log.d("SocureFlutter", "✅ DocV Success: ${sdkResult.deviceSessionToken}")
                         val resultMap = mapOf(
                             "success" to true,
                             "deviceSessionToken" to sdkResult.deviceSessionToken
@@ -148,11 +155,17 @@ class SocureFlutterPlugin :
                         result.success(resultMap)
                     }
                     is SocureDocVFailure -> {
+                        // Log detailed error information
+                        android.util.Log.e("SocureFlutter", "❌ DocV Failure:")
+                        android.util.Log.e("SocureFlutter", "   Error Type: ${sdkResult.error}")
+                        android.util.Log.e("SocureFlutter", "   Error Name: ${sdkResult.error.name}")
+                        android.util.Log.e("SocureFlutter", "   Device Token: ${sdkResult.deviceSessionToken}")
+
                         val errorCode = mapErrorToCode(sdkResult.error)
                         val resultMap = mapOf(
                             "success" to false,
                             "errorCode" to errorCode,
-                            "errorMessage" to sdkResult.error.toString(),
+                            "errorMessage" to sdkResult.error.name,
                             "deviceSessionToken" to sdkResult.deviceSessionToken
                         )
                         result.success(resultMap)
