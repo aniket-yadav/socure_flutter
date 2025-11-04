@@ -2,6 +2,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Socure SDK Maven repository (required for socure_flutter plugin)
+        maven { url = uri("https://sdk.socure.com") }
     }
 }
 

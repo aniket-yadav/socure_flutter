@@ -1,18 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.aniketlabs.socure_flutter">
 
+  <!-- Required camera feature -->
+  <uses-feature android:name="android.hardware.camera" />
+
   <!-- Required permissions for Socure DocV SDK -->
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-  <!-- Optional: For document capture from gallery -->
+  <!-- Required for file/gallery access (Android 13+) -->
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
+  <!-- Required for file access (Android 12 and below) -->
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
       android:maxSdkVersion="32" />
-
-  <!-- Camera feature (not required, allows app to be installed on devices without camera) -->
-  <uses-feature android:name="android.hardware.camera" android:required="false" />
-  <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
 </manifest>

@@ -18,6 +18,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // Socure SDK Maven repository (public, no authentication needed)
         maven { url 'https://sdk.socure.com' }
     }
 }
@@ -49,7 +50,9 @@ android {
     }
 
     dependencies {
+        // Socure DocV SDK - public repository, no authentication needed
         implementation 'com.socure.android:docv-capture:5.2.7'
+
         testImplementation("org.jetbrains.kotlin:kotlin-test")
         testImplementation("org.mockito:mockito-core:5.0.0")
     }

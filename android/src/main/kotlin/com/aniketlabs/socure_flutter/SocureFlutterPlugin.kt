@@ -3,11 +3,11 @@ package com.aniketlabs.socure_flutter
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.socure.idplus.docv.SocureSdk
-import com.socure.idplus.docv.model.SocureDocVContext
-import com.socure.idplus.docv.model.SocureDocVError
-import com.socure.idplus.docv.model.SocureDocVFailure
-import com.socure.idplus.docv.model.SocureDocVSuccess
+import com.socure.docv.capturesdk.api.SocureSdk
+import com.socure.docv.capturesdk.api.SocureDocVContext
+import com.socure.docv.capturesdk.api.SocureDocVError
+import com.socure.docv.capturesdk.common.utils.SocureDocVFailure
+import com.socure.docv.capturesdk.common.utils.SocureDocVSuccess
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -96,16 +96,12 @@ class SocureFlutterPlugin :
             // Store the result callback for later
             pendingResult = result
 
-            // Build Socure DocV context
-            val docVContext = SocureDocVContext.Builder()
-                .publicKey(sdkKey)
-                .docvTransactionToken(transactionToken)
-                .apply {
-                    if (useSocureGov) {
-                        useSocureGov(true)
-                    }
-                }
-                .build()
+            // Build Socure DocV context (based on official Socure docs)
+            val docVContext = SocureDocVContext(
+                transactionToken,
+                sdkKey,
+                useSocureGov
+            )
 
             // Get intent from Socure SDK
             val intent = SocureSdk.getIntent(currentActivity, docVContext)
@@ -170,15 +166,15 @@ class SocureFlutterPlugin :
 
     private fun mapErrorToCode(error: SocureDocVError): String {
         return when (error) {
-            SocureDocVError.INVALID_KEY -> "INVALID_KEY"
-            SocureDocVError.INVALID_TOKEN -> "INVALID_TOKEN"
-            SocureDocVError.NETWORK_ERROR -> "NETWORK_ERROR"
+            SocureDocVError.INVALID_PUBLIC_KEY -> "INVALID_KEY"
+            SocureDocVError.INVALID_DOCV_TRANSACTION_TOKEN -> "INVALID_TOKEN"
+            SocureDocVError.NO_INTERNET_CONNECTION -> "NETWORK_ERROR"
             SocureDocVError.USER_CANCELED -> "USER_CANCELED"
-            SocureDocVError.CAMERA_PERMISSION_DENIED -> "CAMERA_PERMISSION_DENIED"
-            SocureDocVError.CAMERA_ERROR -> "CAMERA_ERROR"
-            SocureDocVError.SERVER_ERROR -> "SERVER_ERROR"
-            SocureDocVError.INITIALIZATION_ERROR -> "INITIALIZATION_ERROR"
-            SocureDocVError.CAPTURE_ERROR -> "CAPTURE_ERROR"
+            SocureDocVError.CAMERA_PERMISSION_DECLINED -> "CAMERA_PERMISSION_DENIED"
+            SocureDocVError.SESSION_EXPIRED -> "SESSION_EXPIRED"
+            SocureDocVError.SESSION_INITIATION_FAILURE -> "INITIALIZATION_ERROR"
+            SocureDocVError.DOCUMENT_UPLOAD_FAILURE -> "CAPTURE_ERROR"
+            SocureDocVError.CONSENT_DECLINED -> "CONSENT_DECLINED"
             SocureDocVError.UNKNOWN -> "UNKNOWN"
         }
     }

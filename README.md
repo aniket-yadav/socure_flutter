@@ -24,10 +24,12 @@ A Flutter plugin for integrating Socure DocV SDK - Document Verification and KYC
 ## Requirements
 
 ### Android
-- Android SDK 24+
+- Android SDK 22+ (OS Version 5.1 or later)
+- compileSdkVersion 34
 - Kotlin 1.9+
 - Java 17+
-- Gradle 8.1.4+
+- Gradle 8.7+ (for 16KB page support)
+- Android Gradle Plugin (AGP) 8.5.1+ (for 16KB page support)
 
 ### iOS
 - iOS 13.0+
@@ -52,18 +54,24 @@ flutter pub get
 
 ### Android Setup
 
-1. **Add Maven Repository**: No additional repository configuration needed (already included in the plugin).
+1. **Maven Repository**: The Socure SDK repository is configured automatically in the plugin. The repository (`https://sdk.socure.com`) is **public and requires no authentication**.
 
-2. **Permissions**: The plugin automatically includes required permissions. Your app will need to request camera permissions at runtime:
+2. **Permissions**: The plugin automatically includes required permissions. Your app will need to request camera and file permissions at runtime:
 
 ```xml
 <!-- Already included in plugin AndroidManifest.xml -->
+<uses-feature android:name="android.hardware.camera" />
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 ```
 
-3. **Minimum SDK**: Ensure your `android/app/build.gradle` has `minSdkVersion` >= 24:
+   **Important**: Check for camera and file permissions before launching the SDK.
+
+3. **Minimum SDK**: Ensure your `android/app/build.gradle` has `minSdkVersion` >= 22 (24 recommended):
 
 ```gradle
 android {
@@ -75,16 +83,25 @@ android {
 
 ### iOS Setup
 
-1. **Add permissions to Info.plist**: Add camera and photo library usage descriptions:
+1. **Configure Podfile**: Update your `ios/Podfile` to use static linkage (required for Socure SDK):
+
+```ruby
+platform :ios, '13.0'
+
+target 'Runner' do
+  use_frameworks! :linkage => :static
+  # ... rest of your Podfile
+end
+```
+
+2. **Add permissions to Info.plist**: Add camera usage description:
 
 ```xml
 <key>NSCameraUsageDescription</key>
-<string>Camera access is required to capture documents for verification</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>Photo library access allows you to select documents for verification</string>
+<string>This application requires use of your camera in order to capture your identity documents.</string>
 ```
 
-2. **CocoaPods Installation**: Run `pod install` in your `ios/` directory:
+3. **CocoaPods Installation**: Run `pod install` in your `ios/` directory:
 
 ```bash
 cd ios && pod install && cd ..
@@ -455,9 +472,54 @@ Authorization: SocureApiKey YOUR_SECRET_KEY
 
 For testing without a backend, you can use Socure's sandbox environment. Contact Socure support for sandbox credentials.
 
+## Important Notes for Users of This Plugin
+
+### When Using This Plugin in Your App
+
+#### Android
+Add the Socure Maven repository to your app's `android/build.gradle.kts` or `android/build.gradle`:
+
+**For build.gradle.kts:**
+```kotlin
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://sdk.socure.com") }
+    }
+}
+```
+
+**For build.gradle:**
+```groovy
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://sdk.socure.com' }
+    }
+}
+```
+
+#### iOS
+Update your `ios/Podfile` to use static linkage:
+
+```ruby
+platform :ios, '13.0'
+
+target 'Runner' do
+  use_frameworks! :linkage => :static
+  # ... rest of your configuration
+end
+```
+
 ## Troubleshooting
 
 ### Android Issues
+
+**Issue:** `Could not find com.socure.android:docv-capture:5.2.7`
+**Solution:**
+Ensure you've added the Socure Maven repository (`https://sdk.socure.com`) to your app's `android/build.gradle` or `android/build.gradle.kts` file. See "Important Notes for Users of This Plugin" section above.
 
 **Issue:** `com.socure.idplus.docv not found`
 **Solution:** Ensure you've added the Socure Maven repository and synced Gradle.
@@ -469,6 +531,15 @@ For testing without a backend, you can use Socure's sandbox environment. Contact
 
 **Issue:** `Module 'SocureDocV' not found`
 **Solution:** Run `cd ios && pod install && cd ..`
+
+**Issue:** `The 'Pods-Runner' target has transitive dependencies that include statically linked binaries`
+**Solution:** Update your Podfile to use static linkage:
+```ruby
+target 'Runner' do
+  use_frameworks! :linkage => :static
+  # ...
+end
+```
 
 **Issue:** App crashes on iOS 13
 **Solution:** Ensure minimum deployment target is iOS 13.0 in `ios/Podfile`:

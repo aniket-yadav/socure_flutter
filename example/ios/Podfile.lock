@@ -1,0 +1,40 @@
+PODS:
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - socure_flutter (0.0.1):
+    - Flutter
+    - SocureDeviceRisk (~> 4.5.2)
+    - SocureDocV (= 5.2.7)
+  - SocureDeviceRisk (4.5.2)
+  - SocureDocV (5.2.7):
+    - SocureDeviceRisk (~> 4.5.2)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - socure_flutter (from `.symlinks/plugins/socure_flutter/ios`)
+
+SPEC REPOS:
+  trunk:
+    - SocureDeviceRisk
+    - SocureDocV
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  socure_flutter:
+    :path: ".symlinks/plugins/socure_flutter/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  socure_flutter: 40fca1ff3e737dcea2c2017863d0617fdb337e0e
+  SocureDeviceRisk: 6dc2c23fa2d179be8551e2de763c4f54aba897e5
+  SocureDocV: dfbdb2ab4424414659af146b29831209ce0c53b4
+
+PODFILE CHECKSUM: ff9ad2ec3bf53af900abf7184fa166ce7710baca
+
+COCOAPODS: 1.16.2

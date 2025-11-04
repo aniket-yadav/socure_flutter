@@ -73,12 +73,12 @@ public class SocureFlutterPlugin: NSObject, FlutterPlugin {
     )
 
     // Launch Socure DocV SDK
-    SocureDocVSDK.launch(options: options) { sdkResult in
+    SocureDocVSDK.launch(options) { sdkResult in
       switch sdkResult {
       case .success(let success):
         let resultDict: [String: Any] = [
           "success": true,
-          "deviceSessionToken": success.deviceSessionToken
+          "deviceSessionToken": success.deviceSessionToken ?? ""
         ]
         result(resultDict)
 
@@ -87,7 +87,7 @@ public class SocureFlutterPlugin: NSObject, FlutterPlugin {
         var resultDict: [String: Any] = [
           "success": false,
           "errorCode": errorCode,
-          "errorMessage": failure.error.localizedDescription
+          "errorMessage": String(describing: failure.error)
         ]
 
         // Include deviceSessionToken if available
@@ -102,24 +102,24 @@ public class SocureFlutterPlugin: NSObject, FlutterPlugin {
 
   private func mapErrorToCode(_ error: SocureDocVError) -> String {
     switch error {
-    case .invalidKey:
+    case .invalidPublicKey:
       return "INVALID_KEY"
-    case .invalidToken:
+    case .invalidDocvTransactionToken:
       return "INVALID_TOKEN"
-    case .networkError:
+    case .noInternetConnection:
       return "NETWORK_ERROR"
     case .userCanceled:
       return "USER_CANCELED"
-    case .cameraPermissionDenied:
+    case .cameraPermissionDeclined:
       return "CAMERA_PERMISSION_DENIED"
-    case .cameraError:
-      return "CAMERA_ERROR"
-    case .serverError:
-      return "SERVER_ERROR"
-    case .initializationError:
+    case .sessionExpired:
+      return "SESSION_EXPIRED"
+    case .sessionInitiationFailure:
       return "INITIALIZATION_ERROR"
-    case .captureError:
+    case .documentUploadFailure:
       return "CAPTURE_ERROR"
+    case .consentDeclined:
+      return "CONSENT_DECLINED"
     case .unknown:
       return "UNKNOWN"
     @unknown default:
